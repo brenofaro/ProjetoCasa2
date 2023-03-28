@@ -1,3 +1,7 @@
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -19,6 +23,8 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
+
+    private List<Chave> chavesEncontradas = new ArrayList<>();
         
     /**
      * Create the game and initialise its internal map.
@@ -45,6 +51,7 @@ public class Game
         
         // initialise room exits
         outside.setExit("east", theater);
+
         outside.setExit("south", lab);
         outside.setExit("west", pub);
 
@@ -56,6 +63,14 @@ public class Game
         lab.setExit("east", office);
 
         office.setExit("west", lab);
+
+        //Items
+
+        Item armario = new Item("armario");
+        armario.setKey(Chave.CHAVE_CARRO);
+
+        theater.addItem(armario);
+
 
         currentRoom = outside;  // start game outside
     }
@@ -114,6 +129,8 @@ public class Game
         }
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
+        } else if (commandWord.equals("interact")) {
+            interactObject(command);
         }
         // else command not recognised.
         return wantToQuit;
@@ -159,6 +176,29 @@ public class Game
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
         }
+    }
+
+    private void interactObject(Command command){
+
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Interagir com o que?");
+            return;
+        }
+        String objeto = command.getSecondWord();
+
+        if (currentRoom.existObject(objeto)){
+            Item objetotemp = currentRoom.getObject(objeto);
+            System.out.println("Você interage com o objeto e " + currentRoom.objectHasKey(objetotemp));
+            if (currentRoom.itemHasKeyBool(objetotemp)){
+                chavesEncontradas.add(currentRoom.getObjectKey(objetotemp));
+                currentRoom.removeObjKey(objetotemp);
+
+            }
+        }else {
+            System.out.println("Objeto não encontrado");
+        }
+        System.out.println(currentRoom.getLongDescription());
     }
 
     /** 

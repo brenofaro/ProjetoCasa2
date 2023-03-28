@@ -34,4 +34,8 @@ public class Item {
     public Chave getKey() {
         return key;
     }
+
+    public void removeKey() {
+        key = null;
+    }
 }

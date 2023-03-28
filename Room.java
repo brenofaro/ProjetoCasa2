@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.HashMap;
 
@@ -19,6 +21,8 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
+
+    private List<Item> items = new ArrayList<>();
 
     /**
      * Create a room described "description". Initially, it has
@@ -77,6 +81,10 @@ public class Room
         return returnString;
     }
 
+    public void addItem(Item item){
+        items.add(item);
+    }
+
     /**
      * Return the room that is reached if we go from this room in direction
      * "direction". If there is no room in that direction, return null.
@@ -87,5 +95,46 @@ public class Room
     {
         return exits.get(direction);
     }
+
+    public String objectHasKey(Item item){
+        if (item.getKey() != null){
+            return String.format("\033[32mencontra a %s no objeto\033[m", KeyFormatter.keyFormat(item.getKey()));
+        }else {
+            return "\033[31mnão encontra nenhuma chave\033[m";
+        }
+    }
+
+    public boolean existObject(String itemStr){
+        for (Item item : items){
+            if (item.getName().equals(itemStr)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Item getObject(String itemStr){
+        Item tempItem = null;
+        for (Item item1 : items) {
+            if (item1.getName().equals(itemStr)) {
+                tempItem = item1;
+            }
+        }
+        return tempItem;
+    }
+
+    public boolean itemHasKeyBool(Item item) {
+        return item.hasKey();
+    }
+
+    public Chave getObjectKey(Item item) {
+        return item.getKey();
+    }
+
+    public void removeObjKey(Item item){
+        item.removeKey();
+    }
+
+
 }
 
